@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from .models import Book, Author
+from typing import Optional
 
 
 class BookType(DjangoObjectType):
@@ -24,9 +25,16 @@ class Query:
             graphene.NonNull(BookType),
             required=True
         ),
-        description="書籍取得API"
+        title=graphene.String(
+            required=False,
+            description="書籍名"
+        ),
+        description="書籍一覧取得API"
     )
 
-    def resolve_books(root, info):
-        """booksクエリのビジネスロジックを書く場所"""
-        return Book.objects.all()
+    def resolve_books(root, info, title: Optional[str] = None):
+        qs = Book.objects.all()
+        if title:
+            qs = qs.filter(title__contains=title)
+        return qs
+
