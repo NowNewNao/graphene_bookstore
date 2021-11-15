@@ -70,7 +70,17 @@ class NewBookMutation(graphene.Mutation):
     @classmethod
     def mutate(cls, root, info, book: NewBookInput):
         """書籍登録のビジネスロジックを書く場所"""
-        return Book.objects.first()
+        # 書籍を取得or作成する
+        new_book, created = Book.objects.get_or_create(
+            title=book["title"]
+        )
+        author, _ = Author.objects.get_or_create(
+            **book["author"]
+        )
+        new_book.save()
+        # BookAuthorの中間レコードを作成する
+        new_book.authors.add(author)
+        return new_book
 
 
 class Mutation:
