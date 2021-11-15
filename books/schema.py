@@ -38,3 +38,40 @@ class Query:
             qs = qs.filter(title__contains=title)
         return qs
 
+
+class NewAuthorInput(graphene.InputObjectType):
+    """作者登録の入力型"""
+    first_name= graphene.String(
+        required=True, description="名"
+    )
+    last_name = graphene.String(
+        required=True, description="姓"
+    )
+
+
+class NewBookInput(graphene.InputObjectType):
+    """書籍登録の入力型"""
+    title = graphene.String(
+        required=True, description="タイトル"
+    )
+    author = NewAuthorInput(
+        required=True, description="作者"
+    )
+
+
+class NewBookMutation(graphene.Mutation):
+    """書籍登録ミューテーション"""
+    class Arguments:
+        book = NewBookInput(required=True)
+
+    class Meta:
+        output = graphene.NonNull(BookType)
+
+    @classmethod
+    def mutate(cls, root, info, book: NewBookInput):
+        """書籍登録のビジネスロジックを書く場所"""
+        return Book.objects.first()
+
+
+class Mutation:
+    register_book = NewBookMutation.Field()

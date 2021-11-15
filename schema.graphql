@@ -1,0 +1,15 @@
+input NewBookInput {
+    title: String!
+    author: NewAuthorInput!
+}
+
+input NewAuthorInput {
+    firstName: String!
+    lastName: String!
+}
+
+type Mutation {
+    registerBook(book: NewBookInput!): Book!
+}
+
+
