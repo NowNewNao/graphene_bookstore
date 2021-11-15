@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from .models import Book, Author
 from typing import Optional
+from graphql import GraphQLError
 
 
 class BookType(DjangoObjectType):
@@ -70,6 +71,11 @@ class NewBookMutation(graphene.Mutation):
     @classmethod
     def mutate(cls, root, info, book: NewBookInput):
         """書籍登録のビジネスロジックを書く場所"""
+        raise GraphQLError(
+            "未実装です。",
+            # デバッグ情報はextensionsに渡す
+            extensions={"code": "UNIMPLEMENTED"}
+        )
         # 書籍を取得or作成する
         new_book, created = Book.objects.get_or_create(
             title=book["title"]
